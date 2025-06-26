@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { contentService, ContentSubmission } from "@/services/contentService";
 import { menuService, MenuSection, MenuChangeRequest } from "@/services/menuService";
-import emailService from "@/services/emailService";
+import emailService, { OverviewEmailData } from "@/services/emailService"; // Updated import
 import { 
   FileText, 
   Image as ImageIcon, // Renamed
@@ -121,20 +121,20 @@ export default function OverviewPage() {
     setMessage("");
 
     try {
-      const allData = {
+      const allData: OverviewEmailData = { // Added type
         menus: menus,
         menuRequests: menuRequests,
         contentSubmissions: submissions,
         summary: {
-          totalMenus: menus.length,
-          totalSubmenus: menus.filter(m => m.parent_id).length,
+          totalMenus: menus.filter(m => !m.parent_id).length, // Recalculated for accuracy
+          totalSubmenus: menus.filter(m => m.parent_id).length, // Recalculated for accuracy
           totalMenuRequests: menuRequests.length,
           pendingMenuRequests: menuRequests.filter(r => r.status === "pending").length,
           totalContentSubmissions: submissions.length,
           pendingContentSubmissions: submissions.filter(s => s.status === "pending").length,
           approvedContentSubmissions: submissions.filter(s => s.status === "approved").length
         },
-        submissionType: "Vue d'ensemble complète" // Added missing property
+        submissionType: "Vue d'ensemble complète"
       };
 
       const result = await emailService.sendOverviewData(allData);

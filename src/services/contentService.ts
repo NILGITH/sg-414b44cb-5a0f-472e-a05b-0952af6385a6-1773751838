@@ -1,4 +1,4 @@
-import emailService from "./emailService";
+import emailService, { ContentForEmail } from "./emailService";
 
 export interface ContentSubmission {
   id: string;
@@ -105,7 +105,16 @@ export const contentService = {
 
     // Envoyer par email automatiquement
     try {
-      await emailService.sendContentSubmission(newSubmission, userId);
+      // Map ContentSubmission to ContentForEmail
+      const emailContent: ContentForEmail = {
+        type: newSubmission.content_type,
+        title: newSubmission.title,
+        description: newSubmission.description,
+        // menu: newSubmission.menu_section_id, // Ideally, fetch menu name here
+        // submenu: newSubmission.submenu_section_id, // Ideally, fetch submenu name here
+        files: newSubmission.file_urls?.map(url => ({ name: url.split("/").pop() || "fichier", type: "url" })) // Simplified file info
+      };
+      await emailService.sendContentSubmission(emailContent);
     } catch (error) {
       console.error("Erreur lors de l'envoi de l'email:", error);
     }
@@ -133,7 +142,7 @@ export const contentService = {
   async sendAllContentToEmail() {
     try {
       const submissions = await this.getContentSubmissions();
-      const result = await emailService.sendAllContentData(submissions);
+      const result = await emailService.sendAllContentData(submissions); // Corrected call
       
       if (result.success) {
         return { 
@@ -141,11 +150,12 @@ export const contentService = {
           message: `Contenu envoyé avec succès à petronildaga@aitech-ci.com (${submissions.length} éléments)` 
         };
       } else {
-        throw new Error(result.message);
+        throw new Error(result.message || "Erreur inconnue lors de l'envoi de l'email");
       }
     } catch (error) {
       console.error("Erreur lors de l'envoi:", error);
-      throw new Error("Erreur lors de l'envoi des données par email");
+      const errorMessage = error instanceof Error ? error.message : "Erreur lors de l'envoi des données par email";
+      throw new Error(errorMessage);
     }
   }
 };
