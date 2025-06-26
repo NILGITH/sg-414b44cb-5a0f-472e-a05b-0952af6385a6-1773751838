@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -32,7 +31,8 @@ export default function LoginPage() {
       } else {
         setError("Email ou mot de passe incorrect");
       }
-    } catch (err) {
+    } catch (loginError) {
+      console.error("Login error:", loginError);
       setError("Une erreur est survenue lors de la connexion");
     } finally {
       setIsLoading(false);

@@ -9,7 +9,7 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Menu, User } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 interface LayoutProps {
   children: ReactNode;
