@@ -75,7 +75,7 @@ export default function NewContentPage() {
 
     try {
       await contentService.createContentSubmission(formData, user.id);
-      setMessage("Contenu soumis avec succès ! Un email de notification a été envoyé.");
+      // Ne pas afficher le message dans l'Alert, mais directement ouvrir le modal
       setShowSuccessModal(true);
     } catch (error) {
       setMessage("Erreur lors de la soumission du contenu.");
@@ -345,7 +345,7 @@ export default function NewContentPage() {
                 )}
               </div>
 
-              {message && (
+              {message && !showSuccessModal && (
                 <Alert className={message.includes("succès") ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
                   <AlertDescription className={message.includes("succès") ? "text-green-800" : "text-red-800"}>
                     {message}
