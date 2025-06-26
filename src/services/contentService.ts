@@ -97,13 +97,40 @@ export const contentService = {
       
       console.log('Uploading file to Supabase:', fileName, 'Size:', file.size);
       
-      // Essayer d'abord sans options spéciales
+      // Upload avec options pour éviter les conflits
       const { data, error } = await supabase.storage
         .from('content-files')
-        .upload(fileName, file);
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
       if (error) {
         console.error('Erreur upload Supabase:', error);
+        // Essayer avec upsert si le fichier existe déjà
+        if (error.message.includes('already exists')) {
+          const retryFileName = `${userId}/${Date.now()}-retry-${Math.random().toString(36).substring(2)}.${fileExt}`;
+          const { data: retryData, error: retryError } = await supabase.storage
+            .from('content-files')
+            .upload(retryFileName, file, {
+              cacheControl: '3600',
+              upsert: true
+            });
+          
+          if (retryError) {
+            console.error('Erreur retry upload:', retryError);
+            return null;
+          }
+          
+          if (retryData) {
+            const { data: urlData } = supabase.storage
+              .from('content-files')
+              .getPublicUrl(retryData.path);
+            
+            console.log('File uploaded successfully (retry):', urlData.publicUrl);
+            return urlData.publicUrl;
+          }
+        }
         return null;
       }
 
