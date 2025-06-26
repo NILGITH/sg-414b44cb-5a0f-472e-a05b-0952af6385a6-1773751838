@@ -1,4 +1,3 @@
-
 import { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -6,6 +5,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
+
+  // Ajouter les headers CORS pour permettre le téléchargement depuis les emails
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   try {
     const { fileUrl, fileName } = req.query;
@@ -50,9 +54,11 @@ Informations système:
 - Version: 1.0
 - Status: Fonctionnel`;
 
-      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      // Headers pour forcer le téléchargement
+      res.setHeader('Content-Type', 'application/octet-stream');
       res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
       res.setHeader('Content-Length', Buffer.byteLength(mockContent, 'utf8'));
+      res.setHeader('Cache-Control', 'no-cache');
       
       return res.status(200).send(mockContent);
     }
@@ -81,9 +87,11 @@ Informations système:
           if (data) {
             const buffer = await data.arrayBuffer();
             
-            res.setHeader('Content-Type', data.type || 'application/octet-stream');
+            // Headers pour forcer le téléchargement
+            res.setHeader('Content-Type', 'application/octet-stream');
             res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
             res.setHeader('Content-Length', buffer.byteLength);
+            res.setHeader('Cache-Control', 'no-cache');
             
             return res.status(200).send(Buffer.from(buffer));
           }
@@ -91,9 +99,16 @@ Informations système:
       } catch (supabaseError) {
         console.error('Erreur lors du téléchargement Supabase:', supabaseError);
         // Fallback vers un fichier simulé si Supabase échoue
-        const fallbackContent = `Fichier simulé: ${fileName}\nErreur Supabase: ${supabaseError}\nDate: ${new Date().toISOString()}`;
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        const fallbackContent = `Fichier simulé: ${fileName}
+Erreur Supabase: ${supabaseError}
+Date: ${new Date().toISOString()}
+
+Ce fichier a été généré automatiquement suite à une erreur de téléchargement Supabase.
+Ceci est normal dans un environnement de démonstration.`;
+        
+        res.setHeader('Content-Type', 'application/octet-stream');
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Cache-Control', 'no-cache');
         return res.status(200).send(fallbackContent);
       }
     }
@@ -116,23 +131,24 @@ Date: ${new Date().toISOString()}
 Ce fichier a été généré automatiquement car l'URL originale n'était pas accessible.
 Ceci est normal dans un environnement de démonstration.`;
           
-          res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+          res.setHeader('Content-Type', 'application/octet-stream');
           res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+          res.setHeader('Cache-Control', 'no-cache');
           return res.status(200).send(simulatedContent);
         }
 
         const buffer = await response.arrayBuffer();
-        const contentType = response.headers.get('content-type') || 'application/octet-stream';
         
         console.log('Téléchargement HTTP réussi:', { 
           size: buffer.byteLength, 
-          contentType,
           fileName 
         });
         
-        res.setHeader('Content-Type', contentType);
+        // Headers pour forcer le téléchargement
+        res.setHeader('Content-Type', 'application/octet-stream');
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
         res.setHeader('Content-Length', buffer.byteLength);
+        res.setHeader('Cache-Control', 'no-cache');
         
         return res.status(200).send(Buffer.from(buffer));
       } catch (fetchError) {
@@ -146,8 +162,9 @@ Date: ${new Date().toISOString()}
 Ce fichier a été généré automatiquement suite à une erreur de téléchargement.
 Ceci est normal dans un environnement de démonstration.`;
         
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        res.setHeader('Content-Type', 'application/octet-stream');
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Cache-Control', 'no-cache');
         return res.status(200).send(errorContent);
       }
     }
@@ -162,8 +179,9 @@ Date: ${new Date().toISOString()}
 Ce fichier a été généré automatiquement par le système CAPEC.
 Il s'agit d'un fichier de démonstration.`;
       
-      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Content-Type', 'application/octet-stream');
       res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+      res.setHeader('Cache-Control', 'no-cache');
       return res.status(200).send(fallbackContent);
     }
 
@@ -181,8 +199,9 @@ Erreur: ${error instanceof Error ? error.message : 'Erreur inconnue'}
 
 Ce fichier a été généré suite à une erreur système.`;
       
-      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Content-Type', 'application/octet-stream');
       res.setHeader('Content-Disposition', `attachment; filename="${fileName || 'erreur.txt'}"`);
+      res.setHeader('Cache-Control', 'no-cache');
       return res.status(200).send(errorContent);
     } catch (fallbackError) {
       console.error("Erreur du fallback de téléchargement:", fallbackError);
