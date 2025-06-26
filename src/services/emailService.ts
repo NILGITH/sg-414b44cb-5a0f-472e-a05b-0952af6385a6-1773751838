@@ -68,14 +68,11 @@ export const emailService = {
         let detail = `- ${file.name} (${file.type})`;
         if (file.url) {
           const downloadUrl = `${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(file.url)}&fileName=${encodeURIComponent(file.name)}`;
-          detail += `
-  Télécharger: ${downloadUrl}`;
+          detail += `\n  Télécharger: ${downloadUrl}`;
         }
         return detail;
       });
-      filesDetailsText = "Fichiers joints:
-" + filesList.join("
-");
+      filesDetailsText = "Fichiers joints:\n" + filesList.join("\n");
     }
 
     const htmlBody = `
@@ -138,8 +135,7 @@ export const emailService = {
       "Action requise: Cette soumission nécessite votre approbation.",
       `Connectez-vous au panel d'administration: ${baseUrl}/admin/login`
     ];
-    const textBody = textBodyLines.join("
-");
+    const textBody = textBodyLines.join("\n");
 
     const emailData = {
       to: "petronildaga@capec-ci.org",
