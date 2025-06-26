@@ -11,15 +11,19 @@ export interface Database {
   public: {
     Tables: {
       // Add your tables here
-    }
+      // eslint-disable-next-line @typescript-eslint/ban-types
+    } & {}
     Views: {
       // Add your views here
-    }
+      // eslint-disable-next-line @typescript-eslint/ban-types
+    } & {}
     Functions: {
       // Add your functions here
-    }
+      // eslint-disable-next-line @typescript-eslint/ban-types
+    } & {}
     Enums: {
       // Add your enums here
-    }
+      // eslint-disable-next-line @typescript-eslint/ban-types
+    } & {}
   }
 }
