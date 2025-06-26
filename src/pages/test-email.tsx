@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function TestEmailPage() {
-  const [email, setEmail] = useState("petronildaga@aitech-ci.com");
+  const [email, setEmail] = useState("petronildaga@capec-ci.org");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -81,7 +80,7 @@ export default function TestEmailPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="petronildaga@aitech-ci.com"
+                placeholder="petronildaga@capec-ci.org"
               />
             </div>
             

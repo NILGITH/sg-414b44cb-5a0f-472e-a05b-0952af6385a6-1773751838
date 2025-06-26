@@ -140,7 +140,7 @@ export default function OverviewPage() {
       const result = await emailService.sendOverviewData(allData);
       
       if (result.success) {
-        setMessage(`Vue d'ensemble complète envoyée avec succès à petronildaga@aitech-ci.com`);
+        setMessage(`Vue d'ensemble complète envoyée avec succès à petronildaga@capec-ci.org`);
       } else {
         setMessage("Erreur lors de l'envoi des données");
       }

@@ -147,7 +147,7 @@ export const contentService = {
       if (result.success) {
         return { 
           success: true, 
-          message: `Contenu envoyé avec succès à petronildaga@aitech-ci.com (${submissions.length} éléments)` 
+          message: `Contenu envoyé avec succès à petronildaga@capec-ci.org (${submissions.length} éléments)` 
         };
       } else {
         throw new Error(result.message || "Erreur inconnue lors de l'envoi de l'email");
