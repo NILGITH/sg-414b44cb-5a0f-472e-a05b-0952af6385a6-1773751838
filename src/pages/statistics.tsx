@@ -61,22 +61,22 @@ export default function StatisticsPage() {
         overview: {
           totalMenus: 7,
           totalSubmenus: 14,
-          totalContentSubmissions: 5,
+          totalContentSubmissions: 13,
           totalMenuRequests: 4,
           pendingItems: 0,
-          approvedItems: 7,
-          rejectedItems: 2,
+          approvedItems: 13,
+          rejectedItems: 4,
         },
         contentByType: {
-          text: 2,
-          image: 2,
-          video: 1,
-          pdf: 0,
+          text: 5,
+          image: 4,
+          video: 2,
+          pdf: 2,
         },
         contentByStatus: {
           pending: 0,
-          approved: 4,
-          rejected: 1,
+          approved: 11,
+          rejected: 2,
         },
         menuRequestsByStatus: {
           pending: 0,
@@ -87,12 +87,12 @@ export default function StatisticsPage() {
           {
             date: new Date().toISOString(),
             type: "content",
-            title: "Contenu récent",
+            title: "Contenu récent soumis",
             status: "approved",
           }
         ],
         monthlyStats: [
-          { month: "décembre 2024", contentSubmissions: 5, menuRequests: 4 },
+          { month: "décembre 2024", contentSubmissions: 13, menuRequests: 4 },
         ],
       };
       setStats(fallbackStats);

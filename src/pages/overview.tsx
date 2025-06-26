@@ -121,13 +121,13 @@ export default function OverviewPage() {
     setMessage("");
 
     try {
-      const allData: OverviewEmailData = { // Added type
+      const allData: OverviewEmailData = {
         menus: menus,
         menuRequests: menuRequests,
         contentSubmissions: submissions,
         summary: {
-          totalMenus: menus.filter(m => !m.parent_id).length, // Recalculated for accuracy
-          totalSubmenus: menus.filter(m => m.parent_id).length, // Recalculated for accuracy
+          totalMenus: menus.filter(m => !m.parent_id).length,
+          totalSubmenus: menus.filter(m => m.parent_id).length,
           totalMenuRequests: menuRequests.length,
           pendingMenuRequests: menuRequests.filter(r => r.status === "pending").length,
           totalContentSubmissions: submissions.length,
