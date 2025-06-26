@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,7 +44,7 @@ export default function TestEmailPage() {
                   <p><strong>Email :</strong> admin@capec-ci.org</p>
                   <p><strong>Mot de passe :</strong> admin2024</p>
                   <p><strong>Accès :</strong> Panel d'approbation des soumissions</p>
-                  <p><strong>URL :</strong> <a href="https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work/admin/approvals" style="color: #dc2626;">Panel d'approbation</a></p>
+                  <p><strong>URL :</strong> <a href="https://backoffice.capec-ci.org/admin/approvals" style="color: #dc2626;">Panel d'approbation</a></p>
                 </div>
 
                 <div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; border: 1px solid #ffeaa7; margin: 20px 0;">
@@ -61,9 +60,9 @@ export default function TestEmailPage() {
                 <div style="background-color: #e0f2fe; padding: 15px; border-radius: 5px; border: 1px solid #81d4fa; margin: 20px 0;">
                   <h4 style="color: #0277bd; margin-top: 0;">🔗 Liens utiles :</h4>
                   <ul style="color: #0277bd;">
-                    <li><a href="https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work/login" style="color: #0277bd;">Connexion principale</a></li>
-                    <li><a href="https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work/admin/approvals" style="color: #0277bd;">Panel d'approbation</a></li>
-                    <li><a href="https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work/dashboard" style="color: #0277bd;">Tableau de bord</a></li>
+                    <li><a href="https://backoffice.capec-ci.org/login" style="color: #0277bd;">Connexion principale</a></li>
+                    <li><a href="https://backoffice.capec-ci.org/admin/approvals" style="color: #0277bd;">Panel d'approbation</a></li>
+                    <li><a href="https://backoffice.capec-ci.org/dashboard" style="color: #0277bd;">Tableau de bord</a></li>
                   </ul>
                 </div>
 
@@ -90,7 +89,7 @@ export default function TestEmailPage() {
             Email: admin@capec-ci.org
             Mot de passe: admin2024
             Accès: Panel d'approbation des soumissions
-            URL: https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work/admin/approvals
+            URL: https://backoffice.capec-ci.org/admin/approvals
             
             📋 INSTRUCTIONS :
             1. Utilisez le compte utilisateur pour accéder au tableau de bord principal
@@ -99,9 +98,9 @@ export default function TestEmailPage() {
             4. Les fichiers joints peuvent être téléchargés via les liens dans les emails
             
             🔗 LIENS UTILES :
-            - Connexion principale: https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work/login
-            - Panel d'approbation: https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work/admin/approvals
-            - Tableau de bord: https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work/dashboard
+            - Connexion principale: https://backoffice.capec-ci.org/login
+            - Panel d'approbation: https://backoffice.capec-ci.org/admin/approvals
+            - Tableau de bord: https://backoffice.capec-ci.org/dashboard
             
             Date d'envoi: ${new Date().toLocaleString('fr-FR')}
             Application: Système de gestion de contenu CAPEC
