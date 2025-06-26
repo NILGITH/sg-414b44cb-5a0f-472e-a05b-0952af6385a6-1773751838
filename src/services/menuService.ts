@@ -1,5 +1,4 @@
 import emailService from "./emailService";
-import type { MenuChangeRequest } from "./menuService";
 
 export interface MenuSection {
   id: string;
