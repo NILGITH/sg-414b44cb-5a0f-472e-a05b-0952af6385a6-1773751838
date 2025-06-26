@@ -381,13 +381,13 @@ Résumé:
 
     textBodyOverview += `Soumissions de contenu (${contentSubmissions.length}):
 `;
-    textBodyOverview += contentSubmissionsText;
+    textBodyOverview += contentSubmissionsText; // Ensure contentSubmissionsText itself is well-formed
       
     const emailData = {
       to: "petronildaga@capec-ci.org",
       subject: "Vue d'ensemble complète des données CAPEC",
       html: htmlBody,
-      text: textBodyOverview
+      text: textBodyOverview.trim() // Added trim() to remove any trailing newlines that might cause issues
     };
     const success = await this.sendEmail(emailData);
     return { success, message: success ? "Email envoyé" : "Échec de l'envoi" };
@@ -463,8 +463,9 @@ Résumé:
       "",
       `Total Soumissions: ${submissions.length}`,
       "",
-      submissionsDetailsText
-    ].join("\n");
+      submissionsDetailsText.trim() // Added trim() here as well for consistency
+    ].join("
+");
 
     const emailData = {
       to: "petronildaga@capec-ci.org",

@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
-import { menuService, MenuChangeRequest, MenuSection } from "@/services/menuService";
+// import { menuService, MenuChangeRequest, MenuSection } from "@/services/menuService"; // MenuSection removed
+import { menuService, MenuChangeRequest } from "@/services/menuService"; // MenuSection removed
 import { CheckCircle, Clock, XCircle, Send, ArrowLeft, Plus } from "lucide-react";
 
 export default function MenusPage() {
