@@ -25,17 +25,17 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true); // Initialize loading to true
+  const [loading, setLoading] = useState(true);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setLoading(true);
     
-    // Simulation d'authentification pour utilisateur normal
-    if (email === "admin@capec-ci.org" && password === "admin123") {
+    // Authentification pour utilisateur principal avec nouveaux identifiants sécurisés
+    if (email === "user.capec@cires-ci.org" && password === "CapecUser2024!@#") {
       const userData: User = {
         id: "1",
-        name: "Administrateur CAPEC",
-        email: "admin@capec-ci.org",
+        name: "Utilisateur Principal CAPEC",
+        email: "user.capec@cires-ci.org",
         role: "user"
       };
       setUser(userData);
@@ -51,12 +51,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const adminLogin = async (email: string, password: string): Promise<boolean> => {
     setLoading(true);
     
-    // Simulation d'authentification pour administrateur d'approbation
-    if (email === "admin@capec-ci.org" && password === "admin456") {
+    // Authentification pour administrateur avec nouveaux identifiants sécurisés
+    if (email === "admin.capec@cires-ci.org" && password === "CapecAdmin2024!@#") {
       const userData: User = {
         id: "2",
-        name: "Super Administrateur CAPEC",
-        email: "admin@capec-ci.org",
+        name: "Administrateur CAPEC",
+        email: "admin.capec@cires-ci.org",
         role: "admin"
       };
       setUser(userData);

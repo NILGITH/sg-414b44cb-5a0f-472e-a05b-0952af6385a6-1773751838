@@ -60,18 +60,21 @@ export const emailService = {
   },
 
   async sendContentSubmission(content: ContentForEmail): Promise<boolean> {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work";
+    const baseUrl = "https://backoffice.capec-ci.org";
     
     let filesDetailsText = "Aucun fichier joint";
     if (content.files && content.files.length > 0) {
       const filesList = content.files.map((file) => {
         let detail = `- ${file.name} (${file.type})`;
         if (file.url) {
-          detail += `\n  Télécharger: ${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(file.url)}&fileName=${encodeURIComponent(file.name)}`;
+          detail += `
+  Télécharger: ${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(file.url)}&fileName=${encodeURIComponent(file.name)}`;
         }
         return detail;
       });
-      filesDetailsText = "Fichiers joints:\n" + filesList.join("\n");
+      filesDetailsText = "Fichiers joints:
+" + filesList.join("
+");
     }
 
     const htmlBody = `
@@ -131,7 +134,8 @@ export const emailService = {
       "",
       "Action requise: Cette soumission nécessite votre approbation.",
       "Connectez-vous au panel d'administration pour approuver ou rejeter cette soumission."
-    ].join("\n");
+    ].join("
+");
 
     const emailData = {
       to: "petronildaga@capec-ci.org",
@@ -271,7 +275,7 @@ export const emailService = {
 
   async sendOverviewData(overviewData: OverviewEmailData): Promise<{ success: boolean; message?: string }> {
     const { menus, menuRequests, contentSubmissions, summary } = overviewData;
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work";
+    const baseUrl = "https://backoffice.capec-ci.org";
     
     const contentSubmissionsHtml = contentSubmissions.map(s => `
       <div style="margin-bottom: 15px; padding: 15px; background-color: #fff; border-radius: 5px; border: 1px solid #ddd;">
@@ -310,10 +314,13 @@ export const emailService = {
         });
       }
 
-      return parts.join("\n");
+      return parts.join("
+");
     });
 
-    const contentSubmissionsText = contentSubmissionsTextParts.join("\n\n");
+    const contentSubmissionsText = contentSubmissionsTextParts.join("
+
+");
 
     const htmlBody = `
         <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
@@ -371,7 +378,8 @@ export const emailService = {
     textBodyParts.push(`Soumissions de contenu (${contentSubmissions.length}):`);
     textBodyParts.push(contentSubmissionsText);
 
-    const textBody = textBodyParts.join("\n");
+    const textBody = textBodyParts.join("
+");
       
     const emailData = {
       to: "petronildaga@capec-ci.org",
@@ -385,7 +393,7 @@ export const emailService = {
   },
 
   async sendAllContentData(submissions: ContentSubmission[]): Promise<{ success: boolean; message?: string }> {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work";
+    const baseUrl = "https://backoffice.capec-ci.org";
     
     const submissionsHtml = submissions.map(s => `
       <div style="margin-bottom: 20px; padding: 15px; background-color: #fff; border-radius: 5px; border: 1px solid #ddd;">
@@ -431,8 +439,11 @@ export const emailService = {
         });
       }
 
-      return lines.join("\n");
-    }).join("\n\n");
+      return lines.join("
+");
+    }).join("
+
+");
 
     const htmlBody = `
         <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
@@ -455,7 +466,8 @@ export const emailService = {
       `Total Soumissions: ${submissions.length}`,
       "",
       submissionsDetailsText
-    ].join("\n");
+    ].join("
+");
 
     const emailData = {
       to: "petronildaga@capec-ci.org",

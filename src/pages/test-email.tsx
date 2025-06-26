@@ -23,28 +23,29 @@ export default function TestEmailPage() {
         },
         body: JSON.stringify({
           to: email,
-          subject: 'CAPEC - Informations de connexion',
+          subject: 'CAPEC - Informations de connexion sécurisées',
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background-color: #ea580c; color: white; padding: 20px; text-align: center;">
-                <h1>🔐 CAPEC - Informations de Connexion</h1>
+                <h1>🔐 CAPEC - Informations de Connexion Sécurisées</h1>
               </div>
               <div style="padding: 20px; background-color: #f9f9f9;">
-                <h2>Comptes d'accès à l'application CAPEC</h2>
+                <h2>Comptes d'accès sécurisés à l'application CAPEC</h2>
                 
                 <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3b82f6;">
                   <h3 style="color: #3b82f6; margin-top: 0;">👤 Compte Utilisateur Principal</h3>
-                  <p><strong>Email :</strong> admin@capec-ci.org</p>
-                  <p><strong>Mot de passe :</strong> capec2024</p>
+                  <p><strong>Email :</strong> user.capec@cires-ci.org</p>
+                  <p><strong>Mot de passe :</strong> CapecUser2024!@#</p>
                   <p><strong>Accès :</strong> Tableau de bord, gestion des contenus et menus</p>
+                  <p><strong>URL :</strong> <a href="https://backoffice.capec-ci.org/login" style="color: #3b82f6;">Connexion utilisateur</a></p>
                 </div>
 
                 <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #dc2626;">
                   <h3 style="color: #dc2626; margin-top: 0;">🛡️ Compte Administrateur</h3>
-                  <p><strong>Email :</strong> admin@capec-ci.org</p>
-                  <p><strong>Mot de passe :</strong> admin2024</p>
+                  <p><strong>Email :</strong> admin.capec@cires-ci.org</p>
+                  <p><strong>Mot de passe :</strong> CapecAdmin2024!@#</p>
                   <p><strong>Accès :</strong> Panel d'approbation des soumissions</p>
-                  <p><strong>URL :</strong> <a href="https://backoffice.capec-ci.org/admin/approvals" style="color: #dc2626;">Panel d'approbation</a></p>
+                  <p><strong>URL :</strong> <a href="https://backoffice.capec-ci.org/admin/login" style="color: #dc2626;">Connexion administrateur</a></p>
                 </div>
 
                 <div style="background-color: #fff3cd; padding: 15px; border-radius: 5px; border: 1px solid #ffeaa7; margin: 20px 0;">
@@ -54,58 +55,81 @@ export default function TestEmailPage() {
                     <li>Utilisez le <strong>compte administrateur</strong> pour approuver/rejeter les soumissions</li>
                     <li>Tous les emails de notification sont envoyés à cette adresse</li>
                     <li>Les fichiers joints peuvent être téléchargés via les liens dans les emails</li>
+                    <li><strong>⚠️ Gardez ces informations confidentielles</strong></li>
                   </ol>
                 </div>
 
                 <div style="background-color: #e0f2fe; padding: 15px; border-radius: 5px; border: 1px solid #81d4fa; margin: 20px 0;">
                   <h4 style="color: #0277bd; margin-top: 0;">🔗 Liens utiles :</h4>
                   <ul style="color: #0277bd;">
-                    <li><a href="https://backoffice.capec-ci.org/login" style="color: #0277bd;">Connexion principale</a></li>
+                    <li><a href="https://backoffice.capec-ci.org/login" style="color: #0277bd;">Connexion utilisateur principal</a></li>
+                    <li><a href="https://backoffice.capec-ci.org/admin/login" style="color: #0277bd;">Connexion administrateur</a></li>
                     <li><a href="https://backoffice.capec-ci.org/admin/approvals" style="color: #0277bd;">Panel d'approbation</a></li>
                     <li><a href="https://backoffice.capec-ci.org/dashboard" style="color: #0277bd;">Tableau de bord</a></li>
                   </ul>
                 </div>
 
+                <div style="background-color: #fef2f2; padding: 15px; border-radius: 5px; border: 1px solid #fecaca; margin: 20px 0;">
+                  <h4 style="color: #dc2626; margin-top: 0;">🔒 Sécurité :</h4>
+                  <ul style="color: #dc2626; font-size: 14px;">
+                    <li>• Mots de passe renforcés avec caractères spéciaux</li>
+                    <li>• Emails différents pour chaque type de compte</li>
+                    <li>• Accès séparés selon les rôles</li>
+                    <li>• Ne partagez jamais ces informations</li>
+                  </ul>
+                </div>
+
                 <p><strong>Date d'envoi :</strong> ${new Date().toLocaleString('fr-FR')}</p>
                 <p><strong>Application :</strong> Système de gestion de contenu CAPEC</p>
+                <p><strong>Version :</strong> Sécurisée v2.0</p>
               </div>
               <div style="background-color: #ea580c; color: white; padding: 10px; text-align: center; font-size: 12px;">
                 <p>Cellule d'Analyse de Politiques Économiques du CIRES</p>
-                <p>🔒 Informations confidentielles - Ne pas transférer</p>
+                <p>🔒 Informations strictement confidentielles - Ne pas transférer</p>
               </div>
             </div>
           `,
           text: `
-            CAPEC - Informations de Connexion
+            CAPEC - Informations de Connexion Sécurisées
             
-            Comptes d'accès à l'application CAPEC :
+            Comptes d'accès sécurisés à l'application CAPEC :
             
             👤 COMPTE UTILISATEUR PRINCIPAL
-            Email: admin@capec-ci.org
-            Mot de passe: capec2024
+            Email: user.capec@cires-ci.org
+            Mot de passe: CapecUser2024!@#
             Accès: Tableau de bord, gestion des contenus et menus
+            URL: https://backoffice.capec-ci.org/login
             
             🛡️ COMPTE ADMINISTRATEUR
-            Email: admin@capec-ci.org
-            Mot de passe: admin2024
+            Email: admin.capec@cires-ci.org
+            Mot de passe: CapecAdmin2024!@#
             Accès: Panel d'approbation des soumissions
-            URL: https://backoffice.capec-ci.org/admin/approvals
+            URL: https://backoffice.capec-ci.org/admin/login
             
             📋 INSTRUCTIONS :
             1. Utilisez le compte utilisateur pour accéder au tableau de bord principal
             2. Utilisez le compte administrateur pour approuver/rejeter les soumissions
             3. Tous les emails de notification sont envoyés à cette adresse
             4. Les fichiers joints peuvent être téléchargés via les liens dans les emails
+            5. ⚠️ Gardez ces informations confidentielles
             
             🔗 LIENS UTILES :
-            - Connexion principale: https://backoffice.capec-ci.org/login
+            - Connexion utilisateur: https://backoffice.capec-ci.org/login
+            - Connexion administrateur: https://backoffice.capec-ci.org/admin/login
             - Panel d'approbation: https://backoffice.capec-ci.org/admin/approvals
             - Tableau de bord: https://backoffice.capec-ci.org/dashboard
             
+            🔒 SÉCURITÉ :
+            • Mots de passe renforcés avec caractères spéciaux
+            • Emails différents pour chaque type de compte
+            • Accès séparés selon les rôles
+            • Ne partagez jamais ces informations
+            
             Date d'envoi: ${new Date().toLocaleString('fr-FR')}
             Application: Système de gestion de contenu CAPEC
+            Version: Sécurisée v2.0
             
-            🔒 Informations confidentielles - Ne pas transférer
+            🔒 Informations strictement confidentielles - Ne pas transférer
           `
         }),
       });
@@ -113,7 +137,7 @@ export default function TestEmailPage() {
       const result = await response.json();
       
       if (result.success) {
-        setMessage(`✅ Informations de connexion envoyées avec succès à ${email}`);
+        setMessage(`✅ Nouvelles informations de connexion sécurisées envoyées avec succès à ${email}`);
       } else {
         setMessage(`❌ Erreur: ${result.error} - ${result.details || ''}`);
       }
