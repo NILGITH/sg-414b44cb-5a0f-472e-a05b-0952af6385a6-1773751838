@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import emailService, { ContentForEmail } from "./emailService";
@@ -48,12 +49,54 @@ export const contentService = {
     }
   },
 
+  async ensureBucketExists(): Promise<boolean> {
+    try {
+      // Vérifier si le bucket existe
+      const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+      
+      if (listError) {
+        console.error('Erreur lors de la vérification des buckets:', listError);
+        return false;
+      }
+
+      const bucketExists = buckets?.some(bucket => bucket.name === 'content-files');
+      
+      if (!bucketExists) {
+        // Créer le bucket s'il n'existe pas
+        const { error: createError } = await supabase.storage.createBucket('content-files', {
+          public: true,
+          fileSizeLimit: 52428800, // 50MB
+          allowedMimeTypes: ['image/*', 'video/*', 'application/pdf', 'text/*', 'application/*']
+        });
+
+        if (createError) {
+          console.error('Erreur lors de la création du bucket:', createError);
+          return false;
+        }
+        
+        console.log('Bucket content-files créé avec succès');
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Erreur dans ensureBucketExists:', error);
+      return false;
+    }
+  },
+
   async uploadFileToSupabase(file: File, userId: string): Promise<string | null> {
     try {
+      // S'assurer que le bucket existe
+      const bucketReady = await this.ensureBucketExists();
+      if (!bucketReady) {
+        console.error('Impossible de créer ou vérifier le bucket');
+        return null;
+      }
+
       const fileExt = file.name.split('.').pop();
       const fileName = `${userId}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       
-      console.log('Uploading file to Supabase:', fileName);
+      console.log('Uploading file to Supabase:', fileName, 'Size:', file.size);
       
       const { data, error } = await supabase.storage
         .from('content-files')
@@ -64,6 +107,29 @@ export const contentService = {
 
       if (error) {
         console.error('Erreur upload Supabase:', error);
+        // Essayer une deuxième fois avec un nom différent
+        const retryFileName = `${userId}/retry-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const { data: retryData, error: retryError } = await supabase.storage
+          .from('content-files')
+          .upload(retryFileName, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (retryError) {
+          console.error('Erreur lors du retry upload:', retryError);
+          return null;
+        }
+
+        if (retryData) {
+          const { data: urlData } = supabase.storage
+            .from('content-files')
+            .getPublicUrl(retryData.path);
+          
+          console.log('File uploaded successfully on retry:', urlData.publicUrl);
+          return urlData.publicUrl;
+        }
+        
         return null;
       }
 
@@ -94,13 +160,15 @@ export const contentService = {
           const uploadedUrl = await this.uploadFileToSupabase(file, userId);
           if (uploadedUrl) {
             fileUrls.push(uploadedUrl);
+            console.log(`✅ File uploaded successfully: ${file.name} -> ${uploadedUrl}`);
           } else {
-            console.warn(`Failed to upload file: ${file.name}`);
-            fileUrls.push(`https://storage.capec-ci.com/fallback/${Date.now()}-${file.name}`);
+            console.error(`❌ Failed to upload file: ${file.name}`);
+            // Ne pas ajouter d'URL de remplacement - laisser échouer si l'upload ne marche pas
+            throw new Error(`Impossible d'uploader le fichier: ${file.name}`);
           }
         }
         
-        console.log('Files uploaded:', fileUrls);
+        console.log('All files uploaded successfully:', fileUrls);
       }
 
       const newSubmissionData: Database['public']['Tables']['content_submissions']['Insert'] = {
