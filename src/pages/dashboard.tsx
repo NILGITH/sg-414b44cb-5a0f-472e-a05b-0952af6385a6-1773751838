@@ -41,7 +41,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="hover:shadow-lg transition-shadow border-orange-100">
             <CardHeader>
               <div className="flex items-center space-x-2">
@@ -91,6 +91,24 @@ export default function DashboardPage() {
                 <Button className="w-full bg-orange-600 hover:bg-orange-700">
                   <Eye className="mr-2 h-4 w-4" />
                   Voir tout
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow border-blue-100">
+            <CardHeader>
+              <div className="flex items-center space-x-2">
+                <Settings className="h-5 w-5 text-blue-600" />
+                <CardTitle className="text-lg">Approbations</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4 text-gray-600">Approuvez ou rejetez les soumissions en attente.</p>
+              <Link href="/admin/approvals" passHref>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Gérer les approbations
                 </Button>
               </Link>
             </CardContent>
