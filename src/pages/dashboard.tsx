@@ -56,9 +56,8 @@ export default function DashboardPage() {
       setStats(calculatedStats);
     } catch (error) {
       console.error("Erreur lors du chargement des données:", error);
-      // En cas d'erreur, utiliser des données de production simulées
-      const productionStats = await statisticsService.getProductionReadyData();
-      setStats(productionStats);
+      // Set stats to null or an empty state in case of error for production
+      setStats(null);
     } finally {
       setIsLoading(false);
     }

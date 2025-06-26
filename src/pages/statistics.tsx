@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/components/Layout";
@@ -17,7 +16,7 @@ import {
   Menu,
   Clock,
   CheckCircle,
-  XCircle,
+  // XCircle, // Removed unused import
   Activity,
   Calendar,
   ArrowLeft
@@ -58,9 +57,8 @@ export default function StatisticsPage() {
       setStats(calculatedStats);
     } catch (error) {
       console.error("Erreur lors du chargement des statistiques:", error);
-      // En cas d'erreur, utiliser des données de production simulées
-      const productionStats = await statisticsService.getProductionReadyData();
-      setStats(productionStats);
+      // Set stats to null or an empty state in case of error for production
+      setStats(null); 
     } finally {
       setIsLoading(false);
     }

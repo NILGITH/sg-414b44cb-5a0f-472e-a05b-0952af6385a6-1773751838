@@ -1,4 +1,5 @@
 import emailService, { ContentForEmail } from "./emailService";
+import { menuService } from "./menuService";
 
 export interface ContentSubmission {
   id: string;
@@ -103,20 +104,28 @@ export const contentService = {
 
     mockContentSubmissions.unshift(newSubmission);
 
-    // Envoyer par email automatiquement
+    // Envoyer par email automatiquement avec les noms des menus
     try {
-      // Map ContentSubmission to ContentForEmail
+      // Récupérer les noms des menus
+      const menus = await menuService.getMenuSections();
+      const menuName = newSubmission.menu_section_id ? 
+        menus.find(m => m.id === newSubmission.menu_section_id)?.name || "Menu inconnu" : 
+        "Non spécifié";
+      const submenuName = newSubmission.submenu_section_id ? 
+        menus.find(m => m.id === newSubmission.submenu_section_id)?.name || "Sous-menu inconnu" : 
+        "Non spécifié";
+
       const emailContent: ContentForEmail = {
         type: newSubmission.content_type,
         title: newSubmission.title,
         description: newSubmission.description,
-        // menu: newSubmission.menu_section_id, // Ideally, fetch menu name here
-        // submenu: newSubmission.submenu_section_id, // Ideally, fetch submenu name here
+        menu: menuName,
+        submenu: submenuName,
         files: newSubmission.file_urls?.map(url => ({ 
           name: url.split("/").pop() || "fichier", 
           type: newSubmission.content_type,
           url: url
-        })) // Include URL for download links
+        }))
       };
       await emailService.sendContentSubmission(emailContent);
     } catch (error) {
