@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -139,12 +138,6 @@ export default function AdminLoginPage() {
                 )}
               </Button>
             </form>
-
-            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
-              <p className="text-sm text-blue-800 font-medium">Compte Administrateur :</p>
-              <p className="text-sm text-blue-700">Email: admin@capec-ci.org</p>
-              <p className="text-sm text-blue-700">Mot de passe: admin456</p>
-            </div>
 
             <div className="mt-4 text-center">
               <Link href="/login">

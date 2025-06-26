@@ -131,12 +131,6 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
-
-            <div className="mt-6 p-4 bg-gradient-to-r from-orange-50 to-green-50 rounded-lg border border-orange-200">
-              <p className="text-sm text-orange-800 font-medium">Compte de test :</p>
-              <p className="text-sm text-orange-700">Email: admin@capec-ci.org</p>
-              <p className="text-sm text-orange-700">Mot de passe: admin123</p>
-            </div>
           </CardContent>
         </Card>
       </div>
