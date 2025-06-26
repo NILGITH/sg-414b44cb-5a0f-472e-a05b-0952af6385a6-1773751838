@@ -1,24 +1,44 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { MenuItem } from "@/types/content";
+
+export interface MenuSection {
+  id: string;
+  name: string;
+  slug: string;
+  parent_id?: string;
+  order_index: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface MenuChangeRequest {
+  id: string;
+  old_menu_name: string;
+  new_menu_name: string;
+  is_submenu: boolean;
+  parent_menu_name?: string;
+  status: "pending" | "approved" | "rejected";
+  created_by: string;
+  created_at: string;
+}
 
 export const menuService = {
-  async getMenus() {
+  async getMenuSections() {
     const { data, error } = await supabase
-      .from("menus")
+      .from("menu_sections")
       .select("*")
       .order("order_index", { ascending: true });
 
     if (error) throw error;
-    return data as MenuItem[];
+    return data as MenuSection[];
   },
 
   async getMenusWithSubmenus() {
     const { data, error } = await supabase
-      .from("menus")
+      .from("menu_sections")
       .select(`
         *,
-        submenus:menus!parent_id(*)
+        submenus:menu_sections!parent_id(*)
       `)
       .is("parent_id", null)
       .order("order_index", { ascending: true });
@@ -27,37 +47,48 @@ export const menuService = {
     return data;
   },
 
-  async createMenu(menuData: Partial<MenuItem>) {
+  async createMenuChangeRequest(requestData: {
+    old_menu_name: string;
+    new_menu_name: string;
+    is_submenu: boolean;
+    parent_menu_name?: string;
+  }, userId: string) {
     const { data, error } = await supabase
-      .from("menus")
-      .insert([menuData])
+      .from("menu_change_requests")
+      .insert([
+        {
+          ...requestData,
+          created_by: userId,
+          status: "pending"
+        }
+      ])
       .select()
       .single();
 
     if (error) throw error;
-    return data as MenuItem;
+    return data as MenuChangeRequest;
   },
 
-  async updateMenu(id: string, menuData: Partial<MenuItem>) {
+  async getMenuChangeRequests() {
     const { data, error } = await supabase
-      .from("menus")
-      .update({ ...menuData, updated_at: new Date().toISOString() })
+      .from("menu_change_requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return data as MenuChangeRequest[];
+  },
+
+  async updateMenuChangeRequestStatus(id: string, status: "approved" | "rejected") {
+    const { data, error } = await supabase
+      .from("menu_change_requests")
+      .update({ status })
       .eq("id", id)
       .select()
       .single();
 
     if (error) throw error;
-    return data as MenuItem;
-  },
-
-  async deleteMenu(id: string) {
-    const { error } = await supabase
-      .from("menus")
-      .delete()
-      .eq("id", id);
-
-    if (error) throw error;
-    return true;
+    return data as MenuChangeRequest;
   }
 };
 
