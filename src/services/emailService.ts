@@ -1,3 +1,4 @@
+
 import { ContentSubmission } from "./contentService";
 import { MenuChangeRequest, MenuSection } from "./menuService";
 
@@ -26,7 +27,7 @@ interface OverviewEmailPayload {
 }
 
 export const emailService = {
-  async sendEmail( EmailData): Promise<{ success: boolean; message: string }> {
+  async sendEmail(data: EmailData): Promise<{ success: boolean; message: string }> {
     try {
       // Simulation d'envoi d'email - en production, ceci serait connecté à un service d'email réel
       console.log("📧 Email envoyé à:", data.to);
@@ -89,7 +90,7 @@ export const emailService = {
       subject: "Vue d'ensemble complète - CAPEC-CI",
       content: {
         ...overviewData,
-        submissionType: "Vue d'ensemble complète" // This was already part of overviewData, but kept for consistency
+        submissionType: "Vue d'ensemble complète"
       },
       timestamp: new Date().toISOString(),
       type: "overview_data"
