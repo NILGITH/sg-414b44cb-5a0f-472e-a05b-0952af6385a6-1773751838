@@ -112,7 +112,11 @@ export const contentService = {
         description: newSubmission.description,
         // menu: newSubmission.menu_section_id, // Ideally, fetch menu name here
         // submenu: newSubmission.submenu_section_id, // Ideally, fetch submenu name here
-        files: newSubmission.file_urls?.map(url => ({ name: url.split("/").pop() || "fichier", type: "url" })) // Simplified file info
+        files: newSubmission.file_urls?.map(url => ({ 
+          name: url.split("/").pop() || "fichier", 
+          type: newSubmission.content_type,
+          url: url
+        })) // Include URL for download links
       };
       await emailService.sendContentSubmission(emailContent);
     } catch (error) {

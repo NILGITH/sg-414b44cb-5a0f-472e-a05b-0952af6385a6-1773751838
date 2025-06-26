@@ -14,7 +14,7 @@ export interface ContentForEmail {
   description?: string;
   menu?: string;
   submenu?: string;
-  files?: Array<{ name: string; type: string }>;
+  files?: Array<{ name: string; type: string; url?: string }>;
 }
 
 export interface SubmissionDetailsForEmail {
@@ -59,6 +59,8 @@ export const emailService = {
   },
 
   async sendContentSubmission(content: ContentForEmail): Promise<boolean> {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work';
+    
     const emailData = {
       to: 'petronildaga@capec-ci.org',
       subject: 'Nouvelle soumission de contenu - CAPEC',
@@ -78,9 +80,20 @@ export const emailService = {
             
             ${content.files && content.files.length > 0 ? `
               <h3>Fichiers joints :</h3>
-              <ul>
-                ${content.files.map((file) => `<li>${file.name} (${file.type})</li>`).join('')}
-              </ul>
+              <div style="background-color: #fff; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
+                ${content.files.map((file) => `
+                  <div style="margin-bottom: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 3px;">
+                    <strong>📎 ${file.name}</strong> (${file.type})
+                    ${file.url ? `
+                      <br/>
+                      <a href="${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(file.url)}&fileName=${encodeURIComponent(file.name)}" 
+                         style="color: #ea580c; text-decoration: none; font-weight: bold;">
+                        🔗 Télécharger le fichier
+                      </a>
+                    ` : ''}
+                  </div>
+                `).join('')}
+              </div>
             ` : ''}
           </div>
           <div style="background-color: #ea580c; color: white; padding: 10px; text-align: center; font-size: 12px;">
@@ -99,7 +112,12 @@ export const emailService = {
         Date: ${new Date().toLocaleString('fr-FR')}
         
         ${content.files && content.files.length > 0 ? 
-          `Fichiers: ${content.files.map((file) => file.name).join(', ')}` : 
+          `Fichiers joints:
+${content.files.map((file) => 
+            `- ${file.name} (${file.type})${file.url ? `
+  Télécharger: ${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(file.url)}&fileName=${encodeURIComponent(file.name)}` : ''}`
+          ).join('
+')}` : 
           'Aucun fichier joint'
         }
       `
@@ -216,6 +234,8 @@ export const emailService = {
 
   async sendOverviewData(overviewData: OverviewEmailData): Promise<{ success: boolean; message?: string }> {
     const { menus, menuRequests, contentSubmissions, summary } = overviewData;
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work';
+    
     const emailData = {
       to: "petronildaga@capec-ci.org",
       subject: "Vue d'ensemble complète des données CAPEC",
@@ -240,7 +260,27 @@ export const emailService = {
             <ul>${menuRequests.map(r => `<li>${r.old_menu_name} -> ${r.new_menu_name} (Statut: ${r.status})</li>`).join("")}</ul>
             
             <h2>Soumissions de contenu (${contentSubmissions.length}) :</h2>
-            <ul>${contentSubmissions.map(s => `<li>${s.title} (Type: ${s.content_type}, Statut: ${s.status})</li>`).join("")}</ul>
+            ${contentSubmissions.map(s => `
+              <div style="margin-bottom: 15px; padding: 15px; background-color: #fff; border-radius: 5px; border: 1px solid #ddd;">
+                <h4>${s.title}</h4>
+                <p><strong>Type:</strong> ${s.content_type} | <strong>Statut:</strong> ${s.status}</p>
+                <p><strong>Description:</strong> ${s.description || "N/A"}</p>
+                ${s.file_urls && s.file_urls.length > 0 ? `
+                  <p><strong>Fichiers joints:</strong></p>
+                  <ul>
+                    ${s.file_urls.map(url => {
+                      const fileName = url.split('/').pop() || 'fichier';
+                      return `<li>
+                        <a href="${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(url)}&fileName=${encodeURIComponent(fileName)}" 
+                           style="color: #ea580c; text-decoration: none;">
+                          🔗 ${fileName}
+                        </a>
+                      </li>`;
+                    }).join('')}
+                  </ul>
+                ` : ''}
+              </div>
+            `).join("")}
           </div>
           <div style="background-color: #ea580c; color: white; padding: 10px; text-align: center; font-size: 12px;">
             <p>Cellule d'Analyse de Politiques Économiques du CIRES</p>
@@ -253,6 +293,8 @@ export const emailService = {
   },
 
   async sendAllContentData(submissions: ContentSubmission[]): Promise<{ success: boolean; message?: string }> {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work';
+    
     const emailData = {
       to: "petronildaga@capec-ci.org",
       subject: `Export de toutes les soumissions de contenu CAPEC (${submissions.length})`,
@@ -263,18 +305,32 @@ export const emailService = {
           </div>
           <div style="padding: 20px; background-color: #f9f9f9;">
             <h2>Total Soumissions : ${submissions.length}</h2>
-            <ul>
-              ${submissions.map(s => `
-                <li>
-                  <strong>Titre :</strong> ${s.title} <br/>
-                  <strong>Type :</strong> ${s.content_type} <br/>
-                  <strong>Statut :</strong> ${s.status} <br/>
-                  <strong>Description :</strong> ${s.description || "N/A"} <br/>
-                  <strong>Fichiers :</strong> ${s.file_urls?.join(", ") || "N/A"} <br/>
-                  <hr/>
-                </li>
-              `).join("")}
-            </ul>
+            ${submissions.map(s => `
+              <div style="margin-bottom: 20px; padding: 15px; background-color: #fff; border-radius: 5px; border: 1px solid #ddd;">
+                <h3>${s.title}</h3>
+                <p><strong>Type :</strong> ${s.content_type}</p>
+                <p><strong>Statut :</strong> ${s.status}</p>
+                <p><strong>Description :</strong> ${s.description || "N/A"}</p>
+                <p><strong>Date de création :</strong> ${new Date(s.created_at).toLocaleString('fr-FR')}</p>
+                ${s.file_urls && s.file_urls.length > 0 ? `
+                  <div style="margin-top: 10px;">
+                    <strong>Fichiers joints :</strong>
+                    <ul style="margin-top: 5px;">
+                      ${s.file_urls.map(url => {
+                        const fileName = url.split('/').pop() || 'fichier';
+                        return `<li style="margin-bottom: 5px;">
+                          <a href="${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(url)}&fileName=${encodeURIComponent(fileName)}" 
+                             style="color: #ea580c; text-decoration: none; font-weight: bold;">
+                            🔗 Télécharger ${fileName}
+                          </a>
+                        </li>`;
+                      }).join('')}
+                    </ul>
+                  </div>
+                ` : '<p><em>Aucun fichier joint</em></p>'}
+                <hr style="margin-top: 15px; border: none; border-top: 1px solid #eee;"/>
+              </div>
+            `).join("")}
           </div>
           <div style="background-color: #ea580c; color: white; padding: 10px; text-align: center; font-size: 12px;">
             <p>Cellule d'Analyse de Politiques Économiques du CIRES</p>
