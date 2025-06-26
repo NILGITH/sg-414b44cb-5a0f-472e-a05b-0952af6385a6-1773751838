@@ -402,8 +402,8 @@ export default function NewContentPage() {
                 onClick={handleFinish}
                 className="flex items-center gap-2 flex-1 bg-green-600 hover:bg-green-700"
               >
-                <List className="h-4 w-4" />
-                Voir la liste des contenus
+                <CheckCircle className="h-4 w-4" />
+                Terminer
               </Button>
             </DialogFooter>
           </DialogContent>
