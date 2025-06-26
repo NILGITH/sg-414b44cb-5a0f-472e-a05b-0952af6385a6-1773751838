@@ -1,3 +1,4 @@
+
 import type { ContentSubmission } from "./contentService";
 import type { MenuSection, MenuChangeRequest } from "./menuService";
 
@@ -42,10 +43,10 @@ export interface OverviewEmailData {
 export const emailService = {
   async sendEmail(emailData: EmailData): Promise<boolean> {
     try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
+      const response = await fetch("/api/send-email", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(emailData),
       });
@@ -53,17 +54,17 @@ export const emailService = {
       const result = await response.json();
       return result.success;
     } catch (error) {
-      console.error('Error sending email:', error);
+      console.error("Error sending email:", error);
       return false;
     }
   },
 
   async sendContentSubmission(content: ContentForEmail): Promise<boolean> {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work';
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work";
     
     const emailData = {
-      to: 'petronildaga@capec-ci.org',
-      subject: 'Nouvelle soumission de contenu - CAPEC',
+      to: "petronildaga@capec-ci.org",
+      subject: "Nouvelle soumission de contenu - CAPEC",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: #ea580c; color: white; padding: 20px; text-align: center;">
@@ -71,12 +72,12 @@ export const emailService = {
           </div>
           <div style="padding: 20px; background-color: #f9f9f9;">
             <h2>Détails de la soumission :</h2>
-            <p><strong>Type :</strong> ${content.type || 'Contenu'}</p>
-            <p><strong>Titre :</strong> ${content.title || 'Non spécifié'}</p>
-            <p><strong>Description :</strong> ${content.description || 'Non spécifiée'}</p>
-            <p><strong>Menu :</strong> ${content.menu || 'Non spécifié'}</p>
-            <p><strong>Sous-menu :</strong> ${content.submenu || 'Non spécifié'}</p>
-            <p><strong>Date de soumission :</strong> ${new Date().toLocaleString('fr-FR')}</p>
+            <p><strong>Type :</strong> ${content.type || "Contenu"}</p>
+            <p><strong>Titre :</strong> ${content.title || "Non spécifié"}</p>
+            <p><strong>Description :</strong> ${content.description || "Non spécifiée"}</p>
+            <p><strong>Menu :</strong> ${content.menu || "Non spécifié"}</p>
+            <p><strong>Sous-menu :</strong> ${content.submenu || "Non spécifié"}</p>
+            <p><strong>Date de soumission :</strong> ${new Date().toLocaleString("fr-FR")}</p>
             
             ${content.files && content.files.length > 0 ? `
               <h3>Fichiers joints :</h3>
@@ -90,11 +91,11 @@ export const emailService = {
                          style="color: #ea580c; text-decoration: none; font-weight: bold;">
                         🔗 Télécharger le fichier
                       </a>
-                    ` : ''}
+                    ` : ""}
                   </div>
-                `).join('')}
+                `).join("")}
               </div>
-            ` : ''}
+            ` : ""}
           </div>
           <div style="background-color: #ea580c; color: white; padding: 10px; text-align: center; font-size: 12px;">
             <p>Cellule d'Analyse de Politiques Économiques du CIRES</p>
@@ -104,21 +105,18 @@ export const emailService = {
       text: `
         CAPEC - Nouvelle Soumission
         
-        Type: ${content.type || 'Contenu'}
-        Titre: ${content.title || 'Non spécifié'}
-        Description: ${content.description || 'Non spécifiée'}
-        Menu: ${content.menu || 'Non spécifié'}
-        Sous-menu: ${content.submenu || 'Non spécifié'}
-        Date: ${new Date().toLocaleString('fr-FR')}
+        Type: ${content.type || "Contenu"}
+        Titre: ${content.title || "Non spécifié"}
+        Description: ${content.description || "Non spécifiée"}
+        Menu: ${content.menu || "Non spécifié"}
+        Sous-menu: ${content.submenu || "Non spécifié"}
+        Date: ${new Date().toLocaleString("fr-FR")}
         
         ${content.files && content.files.length > 0 ? 
-          `Fichiers joints:
-${content.files.map((file) => 
-            `- ${file.name} (${file.type})${file.url ? `
-  Télécharger: ${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(file.url)}&fileName=${encodeURIComponent(file.name)}` : ''}`
-          ).join('
-')}` : 
-          'Aucun fichier joint'
+          `Fichiers joints:\n${content.files.map((file) => 
+            `- ${file.name} (${file.type})${file.url ? `\n  Télécharger: ${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(file.url)}&fileName=${encodeURIComponent(file.name)}` : ""}`
+          ).join("\n")}` : 
+          "Aucun fichier joint"
         }
       `
     };
@@ -128,7 +126,7 @@ ${content.files.map((file) =>
 
   async sendMenuUpdate(oldMenu: string, newMenu: string, type: "menu" | "submenu"): Promise<boolean> {
     const emailData = {
-      to: 'petronildaga@capec-ci.org',
+      to: "petronildaga@capec-ci.org",
       subject: `Demande de modification ${type} - CAPEC`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -137,10 +135,10 @@ ${content.files.map((file) =>
           </div>
           <div style="padding: 20px; background-color: #f9f9f9;">
             <h2>Demande de modification :</h2>
-            <p><strong>Type :</strong> ${type === 'menu' ? 'Menu' : 'Sous-menu'}</p>
+            <p><strong>Type :</strong> ${type === "menu" ? "Menu" : "Sous-menu"}</p>
             <p><strong>Ancien libellé :</strong> ${oldMenu}</p>
             <p><strong>Nouveau libellé :</strong> ${newMenu}</p>
-            <p><strong>Date de demande :</strong> ${new Date().toLocaleString('fr-FR')}</p>
+            <p><strong>Date de demande :</strong> ${new Date().toLocaleString("fr-FR")}</p>
           </div>
           <div style="background-color: #ea580c; color: white; padding: 10px; text-align: center; font-size: 12px;">
             <p>Cellule d'Analyse de Politiques Économiques du CIRES</p>
@@ -150,10 +148,10 @@ ${content.files.map((file) =>
       text: `
         CAPEC - Modification ${type}
         
-        Type: ${type === 'menu' ? 'Menu' : 'Sous-menu'}
+        Type: ${type === "menu" ? "Menu" : "Sous-menu"}
         Ancien libellé: ${oldMenu}
         Nouveau libellé: ${newMenu}
-        Date: ${new Date().toLocaleString('fr-FR')}
+        Date: ${new Date().toLocaleString("fr-FR")}
       `
     };
 
@@ -162,20 +160,20 @@ ${content.files.map((file) =>
 
   async sendApprovalNotification(submission: SubmissionDetailsForEmail, status: "approved" | "rejected"): Promise<boolean> {
     const emailData = {
-      to: 'petronildaga@capec-ci.org',
-      subject: `Soumission ${status === 'approved' ? 'approuvée' : 'rejetée'} - CAPEC`,
+      to: "petronildaga@capec-ci.org",
+      subject: `Soumission ${status === "approved" ? "approuvée" : "rejetée"} - CAPEC`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background-color: ${status === 'approved' ? '#16a34a' : '#dc2626'}; color: white; padding: 20px; text-align: center;">
-            <h1>CAPEC - Soumission ${status === 'approved' ? 'Approuvée' : 'Rejetée'}</h1>
+          <div style="background-color: ${status === "approved" ? "#16a34a" : "#dc2626"}; color: white; padding: 20px; text-align: center;">
+            <h1>CAPEC - Soumission ${status === "approved" ? "Approuvée" : "Rejetée"}</h1>
           </div>
           <div style="padding: 20px; background-color: #f9f9f9;">
             <h2>Détails de la soumission :</h2>
             <p><strong>ID :</strong> ${submission.id}</p>
             <p><strong>Titre :</strong> ${submission.title}</p>
             <p><strong>Type :</strong> ${submission.type}</p>
-            <p><strong>Statut :</strong> ${status === 'approved' ? 'Approuvée' : 'Rejetée'}</p>
-            <p><strong>Date de traitement :</strong> ${new Date().toLocaleString('fr-FR')}</p>
+            <p><strong>Statut :</strong> ${status === "approved" ? "Approuvée" : "Rejetée"}</p>
+            <p><strong>Date de traitement :</strong> ${new Date().toLocaleString("fr-FR")}</p>
           </div>
           <div style="background-color: #ea580c; color: white; padding: 10px; text-align: center; font-size: 12px;">
             <p>Cellule d'Analyse de Politiques Économiques du CIRES</p>
@@ -183,13 +181,13 @@ ${content.files.map((file) =>
         </div>
       `,
       text: `
-        CAPEC - Soumission ${status === 'approved' ? 'Approuvée' : 'Rejetée'}
+        CAPEC - Soumission ${status === "approved" ? "Approuvée" : "Rejetée"}
         
         ID: ${submission.id}
         Titre: ${submission.title}
         Type: ${submission.type}
-        Statut: ${status === 'approved' ? 'Approuvée' : 'Rejetée'}
-        Date: ${new Date().toLocaleString('fr-FR')}
+        Statut: ${status === "approved" ? "Approuvée" : "Rejetée"}
+        Date: ${new Date().toLocaleString("fr-FR")}
       `
     };
 
@@ -234,7 +232,7 @@ ${content.files.map((file) =>
 
   async sendOverviewData(overviewData: OverviewEmailData): Promise<{ success: boolean; message?: string }> {
     const { menus, menuRequests, contentSubmissions, summary } = overviewData;
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work';
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work";
     
     const emailData = {
       to: "petronildaga@capec-ci.org",
@@ -269,16 +267,16 @@ ${content.files.map((file) =>
                   <p><strong>Fichiers joints:</strong></p>
                   <ul>
                     ${s.file_urls.map(url => {
-                      const fileName = url.split('/').pop() || 'fichier';
+                      const fileName = url.split("/").pop() || "fichier";
                       return `<li>
                         <a href="${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(url)}&fileName=${encodeURIComponent(fileName)}" 
                            style="color: #ea580c; text-decoration: none;">
                           🔗 ${fileName}
                         </a>
                       </li>`;
-                    }).join('')}
+                    }).join("")}
                   </ul>
-                ` : ''}
+                ` : ""}
               </div>
             `).join("")}
           </div>
@@ -287,13 +285,42 @@ ${content.files.map((file) =>
           </div>
         </div>
       `,
+      text: `
+        CAPEC - Vue d'ensemble complète
+
+        Résumé:
+        - Menus principaux: ${summary.totalMenus}
+        - Sous-menus: ${summary.totalSubmenus}
+        - Total demandes de menu: ${summary.totalMenuRequests} (Dont ${summary.pendingMenuRequests} en attente)
+        - Total soumissions de contenu: ${summary.totalContentSubmissions} (Dont ${summary.pendingContentSubmissions} en attente, ${summary.approvedContentSubmissions} approuvées)
+
+        Menus (${menus.length}):
+        ${menus.map(m => `- ${m.name} ${m.parent_id ? "(Sous-menu)" : "(Menu principal)"}`).join("\n")}
+
+        Demandes de modification de menu (${menuRequests.length}):
+        ${menuRequests.map(r => `- ${r.old_menu_name} -> ${r.new_menu_name} (Statut: ${r.status})`).join("\n")}
+        
+        Soumissions de contenu (${contentSubmissions.length}):
+        ${contentSubmissions.map(s => `
+          Titre: ${s.title}
+          Type: ${s.content_type} | Statut: ${s.status}
+          Description: ${s.description || "N/A"}
+          ${s.file_urls && s.file_urls.length > 0 ? `
+            Fichiers joints:
+            ${s.file_urls.map(url => {
+              const fileName = url.split("/").pop() || "fichier";
+              return `- ${fileName} (Télécharger: ${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(url)}&fileName=${encodeURIComponent(fileName)})`;
+            }).join("\n            ")}
+          ` : ""}
+        `).join("\n\n")}
+      `
     };
     const success = await this.sendEmail(emailData);
     return { success, message: success ? "Email envoyé" : "Échec de l'envoi" };
   },
 
   async sendAllContentData(submissions: ContentSubmission[]): Promise<{ success: boolean; message?: string }> {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work';
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://3000-414b44cb-5a0f-472e-a05b-0952af6385a6.h1088.daytona.work";
     
     const emailData = {
       to: "petronildaga@capec-ci.org",
@@ -311,23 +338,23 @@ ${content.files.map((file) =>
                 <p><strong>Type :</strong> ${s.content_type}</p>
                 <p><strong>Statut :</strong> ${s.status}</p>
                 <p><strong>Description :</strong> ${s.description || "N/A"}</p>
-                <p><strong>Date de création :</strong> ${new Date(s.created_at).toLocaleString('fr-FR')}</p>
+                <p><strong>Date de création :</strong> ${new Date(s.created_at).toLocaleString("fr-FR")}</p>
                 ${s.file_urls && s.file_urls.length > 0 ? `
                   <div style="margin-top: 10px;">
                     <strong>Fichiers joints :</strong>
                     <ul style="margin-top: 5px;">
                       ${s.file_urls.map(url => {
-                        const fileName = url.split('/').pop() || 'fichier';
+                        const fileName = url.split("/").pop() || "fichier";
                         return `<li style="margin-bottom: 5px;">
                           <a href="${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(url)}&fileName=${encodeURIComponent(fileName)}" 
                              style="color: #ea580c; text-decoration: none; font-weight: bold;">
                             🔗 Télécharger ${fileName}
                           </a>
                         </li>`;
-                      }).join('')}
+                      }).join("")}
                     </ul>
                   </div>
-                ` : '<p><em>Aucun fichier joint</em></p>'}
+                ` : "<p><em>Aucun fichier joint</em></p>"}
                 <hr style="margin-top: 15px; border: none; border-top: 1px solid #eee;"/>
               </div>
             `).join("")}
@@ -337,6 +364,26 @@ ${content.files.map((file) =>
           </div>
         </div>
       `,
+      text: `
+        CAPEC - Export des Soumissions de Contenu
+
+        Total Soumissions: ${submissions.length}
+
+        ${submissions.map(s => `
+          Titre: ${s.title}
+          Type: ${s.content_type}
+          Statut: ${s.status}
+          Description: ${s.description || "N/A"}
+          Date de création: ${new Date(s.created_at).toLocaleString("fr-FR")}
+          ${s.file_urls && s.file_urls.length > 0 ? `
+            Fichiers joints:
+            ${s.file_urls.map(url => {
+              const fileName = url.split("/").pop() || "fichier";
+              return `- ${fileName} (Télécharger: ${baseUrl}/api/download-file?fileUrl=${encodeURIComponent(url)}&fileName=${encodeURIComponent(fileName)})`;
+            }).join("\n            ")}
+          ` : "Aucun fichier joint"}
+        `).join("\n\n")}
+      `
     };
     const success = await this.sendEmail(emailData);
     return { success, message: success ? "Email envoyé" : "Échec de l'envoi" };
