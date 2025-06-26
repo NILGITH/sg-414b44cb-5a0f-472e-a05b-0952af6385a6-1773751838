@@ -9,17 +9,21 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { contentService, ContentFormData } from "@/services/contentService";
 import { menuService, MenuSection } from "@/services/menuService";
 import { 
   Upload, 
-  FileText as FileTextIcon, // Renamed
-  Image as ImageIcon, // Renamed
-  Video as VideoIcon, // Renamed
-  FileIcon as FileIconLucide, // Renamed
+  FileText as FileTextIcon,
+  Image as ImageIcon,
+  Video as VideoIcon,
+  FileIcon as FileIconLucide,
   Plus, 
   X, 
-  ArrowLeft 
+  ArrowLeft,
+  CheckCircle,
+  PlusCircle,
+  List
 } from "lucide-react";
 
 export default function NewContentPage() {
@@ -38,6 +42,7 @@ export default function NewContentPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -71,18 +76,7 @@ export default function NewContentPage() {
 
     try {
       await contentService.createContentSubmission(formData, user.id);
-      setMessage("Contenu soumis avec succès ! Un email de notification a été envoyé.");
-      
-      // Reset form
-      setFormData({
-        title: "",
-        description: "",
-        content_type: "text",
-        content_data: "",
-        files: [],
-        menu_section_id: "",
-        submenu_section_id: ""
-      });
+      setShowSuccessModal(true);
     } catch (error) {
       setMessage("Erreur lors de la soumission du contenu.");
       console.error(error);
@@ -116,6 +110,31 @@ export default function NewContentPage() {
       default:
         return <FileTextIcon className="h-5 w-5" />;
     }
+  };
+
+  const handleAddAnother = () => {
+    setShowSuccessModal(false);
+    setMessage("");
+    // Reset form
+    setFormData({
+      title: "",
+      description: "",
+      content_type: "text",
+      content_data: "",
+      files: [],
+      menu_section_id: "",
+      submenu_section_id: ""
+    });
+    // Reset file input
+    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
+  };
+
+  const handleFinish = () => {
+    setShowSuccessModal(false);
+    router.push("/content");
   };
 
   if (loading || isLoading || !user) {
@@ -354,6 +373,41 @@ export default function NewContentPage() {
             </form>
           </CardContent>
         </Card>
+
+        {/* Modal de succès avec choix */}
+        <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-green-700">
+                <CheckCircle className="h-5 w-5" />
+                Contenu soumis avec succès !
+              </DialogTitle>
+              <DialogDescription className="text-center py-4">
+                Votre contenu a été soumis avec succès et un email de notification a été envoyé.
+                <br />
+                <br />
+                Que souhaitez-vous faire maintenant ?
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex flex-col sm:flex-row gap-2">
+              <Button
+                onClick={handleAddAnother}
+                variant="outline"
+                className="flex items-center gap-2 flex-1"
+              >
+                <PlusCircle className="h-4 w-4" />
+                Ajouter un autre contenu
+              </Button>
+              <Button
+                onClick={handleFinish}
+                className="flex items-center gap-2 flex-1 bg-green-600 hover:bg-green-700"
+              >
+                <List className="h-4 w-4" />
+                Voir la liste des contenus
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );
