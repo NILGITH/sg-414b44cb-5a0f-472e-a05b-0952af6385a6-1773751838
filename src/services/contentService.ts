@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import emailService, { ContentForEmail } from "./emailService";
 import { menuService } from "./menuService";
@@ -72,7 +71,7 @@ export const contentService = {
 
       const { data, error } = await supabase
         .from('content_submissions')
-        .insert([newSubmission])
+        .insert([newSubmission as any]) // Cast to any
         .select()
         .single();
 
@@ -82,33 +81,35 @@ export const contentService = {
       }
 
       // Envoyer par email automatiquement avec les noms des menus
-      try {
-        const menus = await menuService.getMenuSections();
-        const menuName = data.menu_section_id ? 
-          menus.find(m => m.id === data.menu_section_id)?.name || "Menu inconnu" : 
-          "Non spécifié";
-        const submenuName = data.submenu_section_id ? 
-          menus.find(m => m.id === data.submenu_section_id)?.name || "Sous-menu inconnu" : 
-          "Non spécifié";
+      if (data) { // Add null check for data
+        try {
+          const menus = await menuService.getMenuSections();
+          const menuName = data.menu_section_id ? 
+            menus.find(m => m.id === data.menu_section_id)?.name || "Menu inconnu" : 
+            "Non spécifié";
+          const submenuName = data.submenu_section_id ? 
+            menus.find(m => m.id === data.submenu_section_id)?.name || "Sous-menu inconnu" : 
+            "Non spécifié";
 
-        const emailContent: ContentForEmail = {
-          type: data.content_type,
-          title: data.title,
-          description: data.description,
-          menu: menuName,
-          submenu: submenuName,
-          files: data.file_urls?.map(url => ({ 
-            name: url.split("/").pop() || "fichier", 
+          const emailContent: ContentForEmail = {
             type: data.content_type,
-            url: url
-          }))
-        };
-        await emailService.sendContentSubmission(emailContent);
-      } catch (emailError) {
-        console.error("Erreur lors de l'envoi de l'email:", emailError);
+            title: data.title,
+            description: data.description,
+            menu: menuName,
+            submenu: submenuName,
+            files: data.file_urls?.map(url => ({ 
+              name: url.split("/").pop() || "fichier", 
+              type: data.content_type,
+              url: url
+            }))
+          };
+          await emailService.sendContentSubmission(emailContent);
+        } catch (emailError) {
+          console.error("Erreur lors de l'envoi de l'email:", emailError);
+        }
       }
 
-      return data;
+      return data as ContentSubmission; // data could be null, ensure it's handled or asserted if sure
     } catch (error) {
       console.error('Erreur dans createContentSubmission:', error);
       throw error;
@@ -122,7 +123,7 @@ export const contentService = {
         .update({ 
           status,
           updated_at: new Date().toISOString()
-        })
+        } as any) // Cast to any
         .eq('id', id)
         .select()
         .single();

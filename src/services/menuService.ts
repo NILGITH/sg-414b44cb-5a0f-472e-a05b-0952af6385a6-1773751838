@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import emailService from "./emailService";
 
@@ -73,7 +72,7 @@ export const menuService = {
 
       const { data, error } = await supabase
         .from('menu_change_requests')
-        .insert([newRequest])
+        .insert([newRequest as any]) // Cast to any
         .select()
         .single();
 
@@ -83,13 +82,15 @@ export const menuService = {
       }
 
       // Envoyer par email automatiquement
-      try {
-        await emailService.sendMenuChangeRequest(data, userId);
-      } catch (emailError) {
-        console.error("Erreur lors de l'envoi de l'email:", emailError);
+      if (data) { // Add null check for data
+        try {
+          await emailService.sendMenuChangeRequest(data, userId);
+        } catch (emailError) {
+          console.error("Erreur lors de l'envoi de l'email:", emailError);
+        }
       }
 
-      return data;
+      return data as MenuChangeRequest; // data could be null
     } catch (error) {
       console.error('Erreur dans createMenuChangeRequest:', error);
       throw error;
@@ -119,7 +120,7 @@ export const menuService = {
     try {
       const { data, error } = await supabase
         .from('menu_change_requests')
-        .update({ status })
+        .update({ status } as any) // Cast to any
         .eq('id', id)
         .select()
         .single();

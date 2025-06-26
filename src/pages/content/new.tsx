@@ -234,7 +234,9 @@ export default function NewContentPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="menu">Menu principal</Label>
-                  <Select value={formData.menu_section_id} onValueChange={setFormData(prev => ({ ...prev, menu_section_id: value }))}
+                  <Select
+                    value={formData.menu_section_id}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, menu_section_id: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Sélectionner un menu" />
@@ -251,7 +253,9 @@ export default function NewContentPage() {
                 {submenus.length > 0 && (
                   <div className="space-y-2">
                     <Label htmlFor="submenu">Sous-menu</Label>
-                    <Select value={formData.submenu_section_id} onValueChange={setFormData(prev => ({ ...prev, submenu_section_id: value }))}
+                    <Select
+                      value={formData.submenu_section_id}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, submenu_section_id: value }))}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Sélectionner un sous-menu" />
