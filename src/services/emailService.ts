@@ -242,9 +242,9 @@ export const emailService = {
         </div>
       `;
 
-    let textBodyContent = `CAPEC - Nouvelle demande de modification de menu
+    let textBodyContent = "CAPEC - Nouvelle demande de modification de menu
 
-`;
+";
     textBodyContent += `Demandé par: ${userId}
 `;
     textBodyContent += `Ancien nom: ${request.old_menu_name}
@@ -264,7 +264,7 @@ export const emailService = {
       to: "petronildaga@capec-ci.org",
       subject: "Nouvelle demande de modification de menu - CAPEC",
       html: htmlBody,
-      text: textBodyContent
+      text: textBodyContent.trim()
     };
     return this.sendEmail(emailData);
   },
@@ -381,13 +381,13 @@ Résumé:
 
     textBodyOverview += `Soumissions de contenu (${contentSubmissions.length}):
 `;
-    textBodyOverview += contentSubmissionsText; // Ensure contentSubmissionsText itself is well-formed
+    textBodyOverview += contentSubmissionsText;
       
     const emailData = {
       to: "petronildaga@capec-ci.org",
       subject: "Vue d'ensemble complète des données CAPEC",
       html: htmlBody,
-      text: textBodyOverview.trim() // Added trim() to remove any trailing newlines that might cause issues
+      text: textBodyOverview.trim()
     };
     const success = await this.sendEmail(emailData);
     return { success, message: success ? "Email envoyé" : "Échec de l'envoi" };
@@ -463,7 +463,7 @@ Résumé:
       "",
       `Total Soumissions: ${submissions.length}`,
       "",
-      submissionsDetailsText.trim() // Added trim() here as well for consistency
+      submissionsDetailsText.trim()
     ].join("
 ");
 
