@@ -71,6 +71,7 @@ export const contentService = {
 
       const { data, error } = await supabase
         .from('content_submissions')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .insert([newSubmission as any]) // Cast to any
         .select()
         .single();
@@ -120,6 +121,7 @@ export const contentService = {
     try {
       const { data, error } = await supabase
         .from('content_submissions')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .update({ 
           status,
           updated_at: new Date().toISOString()

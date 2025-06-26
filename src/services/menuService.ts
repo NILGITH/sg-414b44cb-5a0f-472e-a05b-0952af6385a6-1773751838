@@ -72,6 +72,7 @@ export const menuService = {
 
       const { data, error } = await supabase
         .from('menu_change_requests')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .insert([newRequest as any]) // Cast to any
         .select()
         .single();
@@ -120,6 +121,7 @@ export const menuService = {
     try {
       const { data, error } = await supabase
         .from('menu_change_requests')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .update({ status } as any) // Cast to any
         .eq('id', id)
         .select()
