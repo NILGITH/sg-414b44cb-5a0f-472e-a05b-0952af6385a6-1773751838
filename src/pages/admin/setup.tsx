@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { CheckCircle, XCircle, Loader2, Users } from "lucide-react";
 import adminService from "@/services/adminService";
+import Link from "next/link";
 
 export default function AdminSetupPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<{
     admin?: { success: boolean; message: string };
@@ -61,20 +64,32 @@ export default function AdminSetupPage() {
             </ul>
           </div>
 
-          <Button
-            onClick={handleInitialize}
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-orange-500 to-green-600 hover:from-orange-600 hover:to-green-700"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Initialisation en cours...
-              </>
-            ) : (
-              "Lancer l'initialisation"
-            )}
-          </Button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Button
+              onClick={handleInitialize}
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-orange-500 to-green-600 hover:from-orange-600 hover:to-green-700"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Initialisation...
+                </>
+              ) : (
+                "Initialisation complète"
+              )}
+            </Button>
+
+            <Link href="/admin/init-users">
+              <Button
+                variant="outline"
+                className="w-full border-blue-500 text-blue-700 hover:bg-blue-50"
+              >
+                <Users className="mr-2 h-4 w-4" />
+                Créer uniquement les utilisateurs
+              </Button>
+            </Link>
+          </div>
 
           {Object.keys(results).length > 0 && (
             <div className="space-y-3 mt-6">
@@ -135,6 +150,12 @@ export default function AdminSetupPage() {
                 <li>• Admin: admin@capec-ci.org / CapecAdmin2024!</li>
                 <li>• User: user@capec-ci.org / CapecUser2024!</li>
               </ul>
+              <Button
+                onClick={() => router.push("/login")}
+                className="mt-4 w-full bg-green-600 hover:bg-green-700"
+              >
+                Aller à la page de connexion
+              </Button>
             </div>
           )}
         </CardContent>
