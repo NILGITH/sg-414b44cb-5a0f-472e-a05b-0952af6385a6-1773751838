@@ -4,11 +4,10 @@ import emailService from "./emailService";
 export interface MenuSection {
   id: string;
   name: string;
-  slug: string;
-  parent_id?: string;
-  order_index: number;
-  is_active: boolean;
+  parent_id?: string | null;
+  display_order: number;
   created_at: string;
+  updated_at: string;
 }
 
 export interface MenuChangeRequest {
@@ -16,10 +15,11 @@ export interface MenuChangeRequest {
   old_menu_name: string;
   new_menu_name: string;
   is_submenu: boolean;
-  parent_menu_name?: string;
+  parent_menu_name?: string | null;
   status: "pending" | "approved" | "rejected";
-  created_by: string;
+  requested_by?: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export const menuService = {
@@ -28,7 +28,7 @@ export const menuService = {
       const { data, error } = await supabase
         .from('menu_sections')
         .select('*')
-        .order('order_index', { ascending: true });
+        .order('display_order', { ascending: true });
 
       if (error) {
         console.error('Erreur lors de la récupération des menus:', error);
@@ -66,7 +66,7 @@ export const menuService = {
     try {
       const newRequest = {
         ...requestData,
-        created_by: userId,
+        requested_by: userId,
         status: 'pending' as const
       };
 
