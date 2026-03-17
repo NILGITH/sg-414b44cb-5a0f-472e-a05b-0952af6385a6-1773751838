@@ -72,8 +72,7 @@ export const menuService = {
 
       const { data, error } = await supabase
         .from('menu_change_requests')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .insert([newRequest as any]) // Cast to any
+        .insert([newRequest as any])
         .select()
         .single();
 
@@ -82,8 +81,7 @@ export const menuService = {
         throw error;
       }
 
-      // Envoyer par email automatiquement
-      if (data) { // Add null check for data
+      if (data) {
         try {
           await emailService.sendMenuChangeRequest(data as unknown as MenuChangeRequest, userId);
         } catch (emailError) {
@@ -91,7 +89,7 @@ export const menuService = {
         }
       }
 
-      return data as unknown as MenuChangeRequest; // data could be null
+      return data as unknown as MenuChangeRequest;
     } catch (error) {
       console.error('Erreur dans createMenuChangeRequest:', error);
       throw error;
@@ -119,10 +117,72 @@ export const menuService = {
 
   async updateMenuChangeRequestStatus(id: string, status: "approved" | "rejected"): Promise<MenuChangeRequest | null> {
     try {
+      // 1. Récupérer les détails de la demande
+      const { data: request, error: fetchError } = await supabase
+        .from('menu_change_requests')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (fetchError || !request) {
+        console.error("Demande introuvable");
+        return null;
+      }
+
+      // 2. Si approuvé, appliquer le changement à la structure réelle
+      if (status === "approved") {
+        if (request.old_menu_name === "Nouveau") {
+          // LOGIQUE DE CRÉATION
+          let parent_id = null;
+          
+          // Si c'est un sous-menu, on cherche l'ID du parent par son nom
+          if (request.is_submenu && request.parent_menu_name) {
+            const { data: parent } = await supabase
+              .from('menu_sections')
+              .select('id')
+              .eq('name', request.parent_menu_name)
+              .maybeSingle();
+            
+            parent_id = parent?.id || null;
+          }
+
+          // Insertion dans la structure réelle
+          // Chercher le display_order max pour mettre à la fin
+          const { data: maxOrder } = await supabase
+            .from('menu_sections')
+            .select('display_order')
+            .eq('parent_id', parent_id as any)
+            .order('display_order', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          const nextOrder = (maxOrder?.display_order ?? -1) + 1;
+
+          const { error: insertError } = await supabase
+            .from('menu_sections')
+            .insert([{
+              name: request.new_menu_name,
+              parent_id: parent_id,
+              display_order: nextOrder,
+              slug: request.new_menu_name.toLowerCase().replace(/ /g, '-')
+            }]);
+
+          if (insertError) console.error("Erreur lors de l'insertion du menu:", insertError);
+        } else {
+          // LOGIQUE DE MODIFICATION
+          const { error: updateError } = await supabase
+            .from('menu_sections')
+            .update({ name: request.new_menu_name })
+            .eq('name', request.old_menu_name);
+
+          if (updateError) console.error("Erreur lors de la mise à jour du menu:", updateError);
+        }
+      }
+
+      // 3. Mettre à jour le statut de la demande originale
       const { data, error } = await supabase
         .from('menu_change_requests')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .update({ status } as any) // Cast to any
+        .update({ status } as any)
         .eq('id', id)
         .select()
         .single();

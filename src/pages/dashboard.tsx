@@ -1,141 +1,152 @@
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Menu, BarChart3, Users } from "lucide-react";
+import { FileText, Menu, BarChart3, Users, ShieldCheck, ArrowRight, Zap } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import Image from "next/image";
 
 export default function Dashboard() {
+  const { user } = useAuth();
+  const isAdmin = user?.user_metadata?.role === 'admin';
+
   return (
-    <Layout>
-      <div className="container mx-auto py-8 px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Tableau de bord CAPEC
-          </h1>
-          <p className="text-gray-600">
-            Collecte de données pour le site capec-ci.org
-          </p>
+    <Layout title="Tableau de bord">
+      <div className="container mx-auto py-10 px-4">
+        {/* Welcome Section */}
+        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-orange-600 font-black text-xs uppercase tracking-widest">
+              <Zap className="h-4 w-4 fill-orange-600" />
+              Plateforme CAPEC
+            </div>
+            <h1 className="text-4xl font-black text-gray-900 tracking-tight">
+              Bonjour, <span className="text-orange-600">{user?.user_metadata?.full_name || user?.email?.split('@')[0]}</span>
+            </h1>
+            <p className="text-gray-500 font-medium">
+              Gérez les contenus et la structure du site officiel capec-ci.org
+            </p>
+          </div>
+
+          {isAdmin && (
+            <Link href="/admin/approvals">
+              <Button size="lg" className="bg-gray-900 hover:bg-black text-white font-bold shadow-xl shadow-gray-200 group">
+                <ShieldCheck className="mr-2 h-5 w-5 text-orange-500" />
+                Panel d'Approbation
+                <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+              </Button>
+            </Link>
+          )}
         </div>
 
+        {/* Quick Actions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Soumettre du contenu */}
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <FileText className="h-10 w-10 text-orange-500 mb-2" />
-              <CardTitle>Soumettre du contenu</CardTitle>
-              <CardDescription>
-                Ajoutez des images, vidéos, textes ou PDF
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/content/new">
-                <Button className="w-full bg-orange-500 hover:bg-orange-600">
-                  Nouveau contenu
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <DashboardCard 
+            href="/content/new"
+            title="Soumettre du contenu"
+            description="Ajoutez des images, vidéos, textes ou rapports PDF"
+            icon={<FileText className="h-8 w-8 text-orange-500" />}
+            buttonText="Nouveau contenu"
+            color="orange"
+          />
 
-          {/* Gérer les menus */}
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <Menu className="h-10 w-10 text-blue-500 mb-2" />
-              <CardTitle>Gérer les menus</CardTitle>
-              <CardDescription>
-                Demander des modifications de menus
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/menus">
-                <Button className="w-full bg-blue-500 hover:bg-blue-600">
-                  Voir les menus
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <DashboardCard 
+            href="/menus"
+            title="Gérer les menus"
+            description="Demander ou valider des modifications de structure"
+            icon={<Menu className="h-8 w-8 text-blue-500" />}
+            buttonText="Voir les menus"
+            color="blue"
+          />
 
-          {/* Statistiques */}
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <BarChart3 className="h-10 w-10 text-green-500 mb-2" />
-              <CardTitle>Statistiques</CardTitle>
-              <CardDescription>
-                Visualisez les données collectées
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/statistics">
-                <Button className="w-full bg-green-500 hover:bg-green-600">
-                  Voir statistiques
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <DashboardCard 
+            href="/statistics"
+            title="Statistiques"
+            description="Visualisez les performances des données collectées"
+            icon={<BarChart3 className="h-8 w-8 text-green-500" />}
+            buttonText="Analyses"
+            color="green"
+          />
 
-          {/* Vue d'ensemble */}
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <Users className="h-10 w-10 text-purple-500 mb-2" />
-              <CardTitle>Vue d'ensemble</CardTitle>
-              <CardDescription>
-                Aperçu global des données
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/overview">
-                <Button className="w-full bg-purple-500 hover:bg-purple-600">
-                  Vue d'ensemble
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <DashboardCard 
+            href="/overview"
+            title="Vue d'ensemble"
+            description="Accédez à l'historique global des soumissions"
+            icon={<Users className="h-8 w-8 text-purple-500" />}
+            buttonText="Aperçu global"
+            color="purple"
+          />
         </div>
 
-        {/* Section informative */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Bienvenue sur l'application de collecte CAPEC</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <p className="text-gray-600">
-                Cette application vous permet de collecter et soumettre facilement des données 
-                pour mettre à jour le site web capec-ci.org.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div className="p-4 bg-orange-50 rounded-lg">
-                  <h3 className="font-semibold text-orange-900 mb-2">📝 Contenu</h3>
-                  <p className="text-sm text-gray-600">
-                    Soumettez des images, vidéos, fichiers PDF ou du texte pour enrichir le site.
+        {/* Info Section */}
+        <div className="mt-12">
+          <Card className="border-none shadow-xl shadow-gray-100 overflow-hidden relative">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
+              <Image src="/logo-capec-mcdb23oy.png" alt="" width={300} height={300} />
+            </div>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-2xl font-black italic">Guide de l'utilisateur</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
+                <div className="space-y-3">
+                  <div className="h-10 w-10 rounded-xl bg-orange-50 flex items-center justify-center font-black text-orange-600">1</div>
+                  <h3 className="font-bold text-gray-900">Choisissez votre contenu</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    Sélectionnez le type de média que vous souhaitez ajouter au site. Assurez-vous d'avoir les droits sur les fichiers.
                   </p>
                 </div>
-                
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <h3 className="font-semibold text-blue-900 mb-2">🗂️ Menus</h3>
-                  <p className="text-sm text-gray-600">
-                    Proposez des modifications ou ajouts aux menus et sous-menus du site.
+                <div className="space-y-3">
+                  <div className="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center font-black text-blue-600">2</div>
+                  <h3 className="font-bold text-gray-900">Assignez une section</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    Rattachez votre contenu à un menu ou un sous-menu existant pour qu'il soit placé au bon endroit sur le site.
                   </p>
                 </div>
-                
-                <div className="p-4 bg-green-50 rounded-lg">
-                  <h3 className="font-semibold text-green-900 mb-2">📊 Statistiques</h3>
-                  <p className="text-sm text-gray-600">
-                    Consultez les analyses et tendances des données collectées.
-                  </p>
-                </div>
-                
-                <div className="p-4 bg-purple-50 rounded-lg">
-                  <h3 className="font-semibold text-purple-900 mb-2">👁️ Vue d'ensemble</h3>
-                  <p className="text-sm text-gray-600">
-                    Accédez à une vision globale de toutes les soumissions.
+                <div className="space-y-3">
+                  <div className="h-10 w-10 rounded-xl bg-green-50 flex items-center justify-center font-black text-green-600">3</div>
+                  <h3 className="font-bold text-gray-900">Attendez la validation</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    L'administrateur recevra une notification et devra approuver votre soumission avant qu'elle ne soit intégrée.
                   </p>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </Layout>
+  );
+}
+
+function DashboardCard({ href, title, description, icon, buttonText, color }: { 
+  href: string; title: string; description: string; icon: React.ReactNode; buttonText: string; color: string 
+}) {
+  const colorMap: Record<string, string> = {
+    orange: "hover:border-orange-200 group-hover:bg-orange-600",
+    blue: "hover:border-blue-200 group-hover:bg-blue-600",
+    green: "hover:border-green-200 group-hover:bg-green-600",
+    purple: "hover:border-purple-200 group-hover:bg-purple-600",
+  };
+
+  return (
+    <Card className={`group transition-all duration-300 border-2 border-transparent hover:shadow-2xl hover:-translate-y-1 ${colorMap[color].split(' ')[0]}`}>
+      <CardHeader>
+        <div className="mb-4 p-3 bg-gray-50 w-fit rounded-xl group-hover:scale-110 transition-transform duration-300">
+          {icon}
+        </div>
+        <CardTitle className="text-xl font-bold group-hover:text-gray-900 transition-colors">{title}</CardTitle>
+        <CardDescription className="font-medium text-gray-500 group-hover:text-gray-600 transition-colors">
+          {description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Link href={href}>
+          <Button className={`w-full font-bold transition-all duration-300 ${colorMap[color].split(' ')[1]}`}>
+            {buttonText}
+          </Button>
+        </Link>
+      </CardContent>
+    </Card>
   );
 }
