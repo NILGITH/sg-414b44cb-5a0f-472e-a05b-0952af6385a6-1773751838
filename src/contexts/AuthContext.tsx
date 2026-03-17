@@ -57,7 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           data: {
             full_name: fullName,
             role: "user"
-          }
+          },
+          emailRedirectTo: undefined
         }
       });
 
@@ -65,25 +66,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: error.message };
       }
 
-      // Create profile
+      // Créer le profil immédiatement
       if (data.user) {
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .insert({
-            id: data.user.id,
-            email,
-            full_name: fullName,
-            role: "user"
-          });
-
-        if (profileError) {
-          console.error("Error creating profile:", profileError);
-        }
+        await supabase.from("profiles").upsert({
+          id: data.user.id,
+          email,
+          full_name: fullName,
+          role: "user"
+        });
       }
 
       return { success: true };
     } catch (error) {
-      return { success: false, error: "Une erreur est survenue" };
+      console.error("Erreur lors de l'inscription:", error);
+      return { success: false, error: "Une erreur est survenue lors de l'inscription" };
     }
   };
 
